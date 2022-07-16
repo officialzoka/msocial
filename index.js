@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const xssClean = require('xss-clean');
+const cors = require('cors');
 const hpp = require('hpp');
 const cookieParer = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -41,21 +42,12 @@ app.use(function (req, res, next) {
     };
     next();
 });
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested, Content-Type, Accept Authorization',
-    );
-    if (req.method === 'OPTIONS') {
-        res.header(
-            'Access-Control-Allow-Methods',
-            'POST, PUT, PATCH, GET, DELETE',
-        );
-        return res.status(200).json({});
-    }
-    next();
-});
+app.use(
+    cors(
+        { origin: 'http://localhost:3000', credentials: true },
+        { origin: 'https://msocial-api.herokuapp.com', credentials: true },
+    ),
+);
 app.use(morgan('tiny'));
 app.use(helmet());
 app.use(xssClean());
