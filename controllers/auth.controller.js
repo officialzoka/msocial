@@ -26,7 +26,7 @@ module.exports.Register = [
     async (req, res) => {
         let user = await User.findOne({ email: req.body.email });
         if (user) return res.error('User already exists');
-        const salt = bcrypt.genSalt(16);
+        const salt = bcrypt.genSaltSync(16);
         req.body.password = await bcrypt.hash(req.body.password, salt);
         user = new User(req.body);
         await user.save();
