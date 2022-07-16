@@ -47,4 +47,4 @@ app.use(cors());
 
 app.use('/api/auth', AuthRoutes);
 
-app.listen(process.env.PORT || 4000);
+app.listen(process.env.PORT || 3000);
