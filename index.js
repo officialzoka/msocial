@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const xssClean = require('xss-clean');
-const cors = require('cors');
 const hpp = require('hpp');
 const cookieParer = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -50,7 +49,6 @@ app.use(mongoSanitize());
 app.use(cookieParer());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
 
 app.use('/api/auth', AuthRoutes);
 
