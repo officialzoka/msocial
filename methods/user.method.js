@@ -3,8 +3,26 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 module.exports = function (schema) {
+    schema.pre('save', function (next) {
+        if (this.isNew) {
+            if (!this.full_name.isModified) {
+                this.full_name = `${this.fname} ${this.lname}`;
+            }
+        }
+        next();
+    });
     schema.methods.generateJwtToken = function () {
-        const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
+        const user = {
+            id: this._id,
+            email: this.email,
+            full_name: this.full_name,
+            fname: this.fname,
+            lname: this.lname,
+            username: this.username,
+        };
+        const token = jwt.sign(user, process.env.JWT_SECRET, {
+            expiresIn: '1h',
+        });
         return token;
     };
     schema.methods.generateEmailActivationToken = function () {

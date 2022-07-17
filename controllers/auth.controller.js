@@ -19,8 +19,9 @@ module.exports.Login = [
         const token = user.generateJwtToken();
         res.cookie('token', token, {
             maxAge: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-            httpOnly: true,
-            sameSite: 'strict',
+            httpOnly: false,
+            sameSite: 'lax',
+            secure: true,
         });
         return res.success('', token);
     },

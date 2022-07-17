@@ -18,6 +18,12 @@ const User = new mongoose.Schema(
             maxlength: 255,
             allowNull: false,
         },
+        full_name: {
+            type: String,
+            required: false,
+            minlength: 3,
+            maxlength: 255,
+        },
         username: {
             type: String,
             required: true,
