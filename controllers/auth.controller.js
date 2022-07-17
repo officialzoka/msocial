@@ -17,6 +17,10 @@ module.exports.Login = [
         if (!isMatch) return res.error('Invalid or incorrect password');
 
         const token = user.generateJwtToken();
+        res.cookie('token', token, {
+            maxAge: Date.now() + 1000 * 60 * 60 * 24 * 7,
+            httpOnly: true,
+        });
         return res.success('', token);
     },
 ];
