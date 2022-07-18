@@ -16,9 +16,9 @@ module.exports.Login = [
         const isMatch = bcrypt.compare(password, user.password);
         if (!isMatch) return res.error('Invalid or incorrect password');
 
-        const token = user.generateJwtToken();
+        const token = await user.generateJwtToken();
         res.cookie('token', token, {
-            maxAge: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+            maxAge: Date.now() + 60 * 60 * 24,
             httpOnly: false,
             sameSite: 'lax',
             secure: true,

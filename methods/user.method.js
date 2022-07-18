@@ -5,7 +5,7 @@ require('dotenv').config();
 module.exports = function (schema) {
     schema.pre('save', function (next) {
         if (this.isNew) {
-            if (!this.full_name.isModified) {
+            if (!this.isModified('full_name')) {
                 this.full_name = `${this.fname} ${this.lname}`;
             }
         }
