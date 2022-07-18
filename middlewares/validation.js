@@ -6,7 +6,8 @@ module.exports.LoginValidation = (req, res, next) => {
         email: Joi.string().email().required(),
         password: Joi.string().required(),
     }).validate(req.body);
-    if (error) return res.error(error.details[0].message);
+    if (error)
+        return res.status(400).json({ message: error.details[0].message });
     next();
 };
 // Register Validation
@@ -18,13 +19,24 @@ module.exports.RegisterValidation = (req, res, next) => {
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
     }).validate(req.body);
-    if (error) return res.error(error.details[0].message);
+    if (error)
+        return res.status(400).json({ message: error.details[0].message });
     next();
 };
 module.exports.EmailValidate = (req, res, next) => {
     const { error } = Joi.object({
         email: Joi.string().email().required(),
     }).validate(req.body);
-    if (error) return res.error(error.details[0].message);
+    if (error)
+        return res.status(400).json({ message: error.details[0].message });
+    next();
+};
+// Post Validation
+module.exports.PostValidation = (req, res, next) => {
+    const { error } = Joi.object({
+        text: Joi.string().min(3).max(320).required(),
+    }).validate(req.body);
+    if (error)
+        return res.status(400).json({ message: error.details[0].message });
     next();
 };

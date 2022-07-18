@@ -11,6 +11,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 const AuthRoutes = require('./routes/auth.route');
+const UserRoutes = require('./routes/user.route');
+const PostRoutes = require('./routes/post.route');
 
 mongoose.connect(
     process.env.DB_URL,
@@ -20,28 +22,11 @@ mongoose.connect(
     },
     (err) => {
         if (err) throw err;
-        console.log('Connected to MongoDB');
+        console.log('Connected to DB');
     },
 );
 
 const app = express();
-app.use(function (req, res, next) {
-    res.success = function (msg = '', data = {}, status = 200) {
-        return res.status(status).json({
-            status: 'success',
-            message: msg,
-            data,
-        });
-    };
-    res.error = function (msg = '', error = {}, status = 400) {
-        return res.status(status).json({
-            status: 'error',
-            message: msg,
-            error,
-        });
-    };
-    next();
-});
 app.use(
     cors(
         { origin: 'http://localhost:3000', credentials: true },
@@ -58,6 +43,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/auth', AuthRoutes);
+app.use('/api/user', UserRoutes);
+app.use('/api/post', PostRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

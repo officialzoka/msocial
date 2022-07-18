@@ -16,12 +16,6 @@ const Comment = new mongoose.Schema(
             type: mongoose.Schema.ObjectId,
             ref: 'User',
         },
-        likes: [
-            {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-            },
-        ],
     },
     { timestamps: true, versionKey: false },
 );

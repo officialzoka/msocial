@@ -48,12 +48,12 @@ const User = new mongoose.Schema(
             allowNull: false,
             select: false,
         },
-        isEmailActivated: {
+        isEmailVerified: {
             type: Boolean,
             default: false,
             required: false,
         },
-        isPhoneActivated: {
+        isPhoneVerified: {
             type: Boolean,
             default: false,
             required: false,
@@ -73,6 +73,11 @@ const User = new mongoose.Schema(
             required: false,
             allowNull: true,
         },
+        status: {
+            type: String,
+            enum: ['private', 'public'],
+            default: 'public',
+        },
         followers: [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -80,6 +85,18 @@ const User = new mongoose.Schema(
             },
         ],
         following: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        waitingToApproved: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        sentedRequests: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
@@ -108,7 +125,13 @@ const User = new mongoose.Schema(
 );
 
 // user search index
-User.index({ fname: 'text', lname: 'text', username: 'text', email: 'text' });
+User.index({
+    fname: 'text',
+    lname: 'text',
+    full_name: 'text',
+    username: 'text',
+    email: 'text',
+});
 
 // methods
 Methods(User);

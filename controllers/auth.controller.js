@@ -11,10 +11,13 @@ module.exports.Login = [
     async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email }).select('+password');
-        if (!user) return res.error('User not found');
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         const isMatch = bcrypt.compare(password, user.password);
-        if (!isMatch) return res.error('Invalid or incorrect password');
+        if (!isMatch)
+            return res
+                .status(400)
+                .json({ message: 'Invalid or incorrect password' });
 
         const token = await user.generateJwtToken();
         res.cookie('token', token, {
@@ -23,7 +26,7 @@ module.exports.Login = [
             sameSite: 'lax',
             secure: true,
         });
-        return res.success('', token);
+        return res.status(200).json(token);
     },
 ];
 // Register
@@ -31,28 +34,33 @@ module.exports.Register = [
     Validation.RegisterValidation,
     async (req, res) => {
         let user = await User.findOne({ email: req.body.email });
-        if (user) return res.error('User already exists');
-        const salt = bcrypt.genSaltSync(16);
+        if (user)
+            return res.status(400).json({ message: 'User already exists' });
+        user = await User.findOne({ username: req.body.username });
+        if (user)
+            return res.status(400).json({ message: 'Username already exists' });
+        const salt = bcrypt.genSalt(16);
         req.body.password = await bcrypt.hash(req.body.password, salt);
         user = new User(req.body);
         await user.save();
-        return res.success('User created successfully');
+        return res.status(200).json({ message: 'User created successfully' });
     },
 ];
 module.exports.SendEmailActivation = [
     AuthCheck,
     async (req, res) => {
         const user = await User.findById(req.userId).select('+token');
-        if (!user) return res.error('User not found');
+        if (!user) return res.status(404).json({ message: 'User not found' });
         const url = await user.generateEmailActivationToken();
-        return res.success('Url sent to email', url);
+        return res.status(200).json(url);
     },
 ];
 module.exports.ActivateUserEmail = async (req, res) => {
     const user = await User.findById(req.params.userId).select('+token');
-    if (!user) return res.error('User not found');
-    if (!user.token) return res.error('Invalid token');
-    if (user.token !== req.params.token) return res.error('Invalid token');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user.token) return res.status(404).json({ message: 'Invalid token' });
+    if (user.token !== req.params.token)
+        return res.status(400).json({ message: 'Invalid token' });
     await user.activateEmail();
-    return res.success('Account activated');
+    return res.status(200).json({ messgae: 'Account activated' });
 };

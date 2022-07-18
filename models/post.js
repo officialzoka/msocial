@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Methods = require('../methods/post.method');
 
 const Post = new mongoose.Schema(
     {
@@ -30,5 +31,5 @@ const Post = new mongoose.Schema(
 
 // post search index
 Post.index({ text: 'text' });
-
+Methods(Post);
 module.exports = mongoose.model('Post', Post);
