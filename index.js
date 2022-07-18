@@ -13,6 +13,7 @@ require('dotenv').config();
 const AuthRoutes = require('./routes/auth.route');
 const UserRoutes = require('./routes/user.route');
 const PostRoutes = require('./routes/post.route');
+const CommentRoutes = require('./routes/comment.route');
 
 mongoose.connect(
     process.env.DB_URL,
@@ -45,6 +46,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', AuthRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/post', PostRoutes);
+app.use('/api/comment', CommentRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Methods = require('../methods/comment.method');
 
 const Comment = new mongoose.Schema(
     {
@@ -19,4 +20,5 @@ const Comment = new mongoose.Schema(
     },
     { timestamps: true, versionKey: false },
 );
+Methods(Comment);
 module.exports = mongoose.model('Comment', Comment);

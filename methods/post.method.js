@@ -9,17 +9,17 @@ module.exports = function (schema) {
         }
         next();
     });
-    schema.methods.removePost = function () {
+    schema.pre('remove', function (next) {
         const user = mongoose.model('User').findById(this.author);
         user.posts.pull(this._id);
         user.save();
         if (this.comments.length > 0) {
-            this.comments.forEach((comment) => {
-                mongoose.model('Comment').findById(comment._id).remove();
+            this.comments.forEach(async (comment) => {
+                await mongoose.model('Comment').findById(comment).remove();
             });
         }
-        return this.remove();
-    };
+        next();
+    });
     schema.methods.updatePost = function (text) {
         this.text = text;
         return this.save();
@@ -30,14 +30,6 @@ module.exports = function (schema) {
     };
     schema.methods.unlike = function (userId) {
         this.likes.pull(userId);
-        return this.save();
-    };
-    schema.methods.addComment = function (commentId) {
-        this.comments.addToSet(commentId);
-        return this.save();
-    };
-    schema.methods.removeComment = function (commentId) {
-        this.comments.pull(commentId);
         return this.save();
     };
     schema.methods.getComments = function () {
